@@ -5,35 +5,22 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
 
-    [SerializeField] List<Waypoint> path;
-    [SerializeField] float dwellTime = 1f;
+
 
     private void Start()
     {
-        StartCoroutine(PrintAllWaypoints());
-        Debug.Log("Hey im at the start");
+
+        Pathfinder pathfinder = FindObjectOfType<Pathfinder>();
+        var path = pathfinder.GetPath();
+        StartCoroutine(FollowPath(path));
     }
 
-    IEnumerator PrintAllWaypoints()
+    IEnumerator FollowPath(List<Waypoint> path)
     {
-        Debug.Log("Starting patrol");
         foreach (Waypoint waypoint in path)
         {
             transform.position = waypoint.transform.position;
-            Debug.Log("Visiting " + transform.position);
-            yield return new WaitForSeconds(dwellTime);
+            yield return new WaitForSeconds(1f);
         }
-        Debug.Log("Ending Patrol");
-        path.Reverse();
-        Debug.Log("Now going backwards");
-        foreach (Waypoint waypoint in path)
-        {
-            transform.position = waypoint.transform.position;
-            Debug.Log("Visiting " + transform.position);
-            yield return new WaitForSeconds(dwellTime);
-        }
-        Debug.Log("Finished loop");
     }
-
-
 }
