@@ -1,33 +1,40 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemySpawner : MonoBehaviour
 {
     [Range(0.1f, 120f)]
-    [SerializeField] float secondsBetweenSpawn;
-    [SerializeField] GameObject enemyPrefab;
+    [SerializeField] float secondsBetweenSpawn = 2f;
+    [SerializeField] EnemyMovement enemyPrefab;
+    [SerializeField] Transform enemyParentTransform;
+    [SerializeField] Text spawnedEnemies;
+    int score;
+    [SerializeField] AudioClip spawnedEnemySFX;
 
     private void Start()
     {
-        StartCoroutine(SpawnEnemy());
+
+        StartCoroutine(RepeatedlySpawnEnemies());
+        spawnedEnemies.text = score.ToString();
     }
 
-    IEnumerator SpawnEnemy()
+    IEnumerator RepeatedlySpawnEnemies()
     {
         while (true) // forever
         {
-            //spawn enemy 
-            RepeatedlySpawnEnemies();
+
+
+            GetComponent<AudioSource>().PlayOneShot(spawnedEnemySFX);
+            var newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+            newEnemy.transform.parent = enemyParentTransform;
             yield return new WaitForSeconds(secondsBetweenSpawn);
         }
-
-
     }
-    private void RepeatedlySpawnEnemies()
+
+    private void AddScore()
     {
-        // Instantiate the prefab at the desired position and rotation
-        GameObject prefab = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
-        prefab.transform.SetParent(this.gameObject.transform);
+        score++;
+        spawnedEnemies.text = score.ToString();
     }
 }

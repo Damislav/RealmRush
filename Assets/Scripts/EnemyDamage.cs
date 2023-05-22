@@ -5,16 +5,23 @@ using UnityEngine;
 
 public class EnemyDamage : MonoBehaviour
 {
-    [SerializeField] Collider collisionMesh;
+    // [SerializeField] Collider collisionMesh;
     [SerializeField] int hitPoints = 10;
     [SerializeField] ParticleSystem hitParticlePrefab;
     [SerializeField] ParticleSystem deathParticlePrefab;
+    [SerializeField] AudioClip enemyHitSFX;
+    [SerializeField] AudioClip enemyDeathSFX;
 
-    float timeToDestroy = 1f;
+    AudioSource myAudioSource;
+
+
+    private void Start()
+    {
+        myAudioSource = GetComponent<AudioSource>();
+    }
 
     private void OnParticleCollision(GameObject other)
     {
-
         ProcessHit();
         if (hitPoints <= 0)
         {
@@ -22,27 +29,31 @@ public class EnemyDamage : MonoBehaviour
         }
     }
 
-    void ProcessHit()
+    public void ProcessHit()
     {
+
         // HitParticle.set
         hitParticlePrefab.Play();
         hitPoints = hitPoints - 1;
+        myAudioSource.PlayOneShot(enemyHitSFX);
     }
 
-    private void KillEnemy()
+    public void KillEnemy()
     {
 
         var vfx = Instantiate(deathParticlePrefab, transform.position, Quaternion.identity);
         vfx.Play();
+        float destroyDelay = vfx
+        .main.duration;
 
-        DestroyVFX(vfx);
-        Destroy(this.gameObject);
+        //destroy particle after delay
+        Destroy(vfx.gameObject, destroyDelay); //particles
 
+        AudioSource.PlayClipAtPoint(enemyDeathSFX, Camera
+        .main.transform.position);
+
+        Destroy(gameObject);// enemy
     }
-    IEnumerator DestroyVFX(ParticleSystem vfx)
-    {
-        yield return new WaitForSeconds(1f); //this will wait 5 seconds
-        Destroy(vfx.gameObject);
-    }
+
 
 }

@@ -5,6 +5,8 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     // [SerializeField] List<Waypoint> path;// to see enemy path ## todo remove 
+    [SerializeField] float movementPeriod = .5f;
+    [SerializeField] ParticleSystem goalParticle;
 
     private void Start()
     {
@@ -19,7 +21,21 @@ public class EnemyMovement : MonoBehaviour
         {
             transform.position = waypoint.transform.position;
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(movementPeriod);
         }
+        SelfDestruct();
+
+
+    }
+    private void SelfDestruct()
+    {
+
+        var vfx = Instantiate(goalParticle, transform.position, Quaternion.identity);
+        vfx.Play();
+        float destroyDelay = vfx
+        .main.duration;
+
+        Destroy(vfx.gameObject, destroyDelay);
+        Destroy(gameObject);
     }
 }

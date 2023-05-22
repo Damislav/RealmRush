@@ -9,9 +9,13 @@ public class Tower : MonoBehaviour
     [SerializeField] Transform objectToPan;
     [SerializeField] float attackRange = 30f;
     [SerializeField] ParticleSystem projectileParticle;
+    [SerializeField] AudioClip towerShootVFX;
 
+    public Waypoint baseWaypoint; // what the tower is standing on
     // can change
     Transform targetEnemy;
+
+
 
 
     private void Update()
@@ -60,7 +64,7 @@ public class Tower : MonoBehaviour
         float distanceToEnemy = Vector3.Distance(targetEnemy.transform.position, gameObject.transform.position);
         if (distanceToEnemy <= attackRange)
         {
-            Shoot(true);
+            Shoot(true); GetComponent<AudioSource>().PlayOneShot(towerShootVFX);
         }
         else
         {
@@ -72,6 +76,9 @@ public class Tower : MonoBehaviour
     {
         var emissionModule = projectileParticle.emission;
         emissionModule.enabled = isActive;
+
+
+
     }
 
 
