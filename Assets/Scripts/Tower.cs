@@ -15,9 +15,6 @@ public class Tower : MonoBehaviour
     // can change
     Transform targetEnemy;
 
-
-
-
     private void Update()
     {
         SetTargetEnemy();

@@ -23,8 +23,6 @@ public class EnemySpawner : MonoBehaviour
     {
         while (true) // forever
         {
-
-
             GetComponent<AudioSource>().PlayOneShot(spawnedEnemySFX);
             var newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
             newEnemy.transform.parent = enemyParentTransform;
